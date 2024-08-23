@@ -1,4 +1,3 @@
-// src/FlowChart.js
 import React, { useState, useEffect } from 'react';
 import ReactFlow, {
   addEdge,
@@ -10,21 +9,21 @@ import ReactFlow, {
 } from 'react-flow-renderer';
 
 const FlowChart = () => {
-  const [nodes, setNodes] = useNodesState([]);
-  const [edges, setEdges] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
     // Fetch all classes and their details from the backend
     const fetchClasses = async () => {
-      const response = await fetch('http://localhost:5001/classes');
+      const response = await fetch('http://localhost:5001/classes'); // Adjust the port if necessary
       const data = await response.json();
 
       // Transform the fetched data into nodes and edges for React Flow
       const loadedNodes = data.map((course, index) => ({
         id: `${course.id}`,
-        position: { x: index * 200, y: 0 },
+        position: { x: index * 200, y: 100 }, // Ensure x and y coordinates are set
         data: { label: `${course.name}: ${course.fullName}` },
         style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
       }));
@@ -77,6 +76,22 @@ const FlowChart = () => {
     }
   };
 
+  const handleNodesChange = (changes) => {
+    setNodes((nds) => 
+      nds.map((node) => {
+        const change = changes.find((c) => c.id === node.id);
+        if (change && change.position) {
+          // Update node position if it has changed
+          return {
+            ...node,
+            position: change.position,
+          };
+        }
+        return node;
+      })
+    );
+  };
+
   return (
     <div style={{ display: 'flex', height: '100vh' }}>
       <div style={{ flex: 1 }}>
@@ -88,8 +103,8 @@ const FlowChart = () => {
         <ReactFlow
           nodes={nodes}
           edges={edges}
-          onNodesChange={isEditMode ? setNodes : undefined}
-          onEdgesChange={isEditMode ? setEdges : undefined}
+          onNodesChange={isEditMode ? handleNodesChange : undefined}
+          onEdgesChange={isEditMode ? onEdgesChange : undefined}
           onConnect={isEditMode ? (params) => setEdges((eds) => addEdge(params, eds)) : undefined}
           fitView
           nodesDraggable={isEditMode}
