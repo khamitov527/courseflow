@@ -4,10 +4,13 @@ import ReactFlow, {
   MiniMap,
   Controls,
   Background,
-  useNodesState,
-  useEdgesState,
+  useNodesState, 
+  useEdgesState,  
 } from 'react-flow-renderer';
 import getLayoutedElements from './layout'; 
+import FlowChartComponent from './FlowChartComponent';
+import ModeToggleButton from './ModeToggleButton';
+import NodeDetailsPanel from './NodeDetailsPanel';
 
 const FlowChart = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -16,12 +19,10 @@ const FlowChart = () => {
   const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
-    // Fetch all courses and their details from the backend
     const fetchCourses = async () => {
       const response = await fetch('http://localhost:5001/courses');
       const courses = await response.json();
 
-      // Transform the fetched data into nodes and edges for React Flow
       const loadedNodes = courses.map((course) => ({
         id: `${course.id}`,
         data: { label: `${course.code}: ${course.name}` },
@@ -58,7 +59,7 @@ const FlowChart = () => {
 
   const handleToggleMode = () => {
     setIsEditMode((prevMode) => !prevMode);
-    setSelectedClass(null); // Clear selection when mode changes
+    setSelectedClass(null);
   };
 
   const handleNodeClick = async (event, node) => {
@@ -73,42 +74,19 @@ const FlowChart = () => {
     <div style={{ display: 'flex', height: '100vh' }}>
       <div style={{ flex: 1 }}>
         <div style={{ marginBottom: '10px' }}>
-          <button onClick={handleToggleMode}>
-            Switch to {isEditMode ? 'View' : 'Edit'} Mode
-          </button>
+          <ModeToggleButton isEditMode={isEditMode} onToggle={handleToggleMode} />
         </div>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={isEditMode ? onNodesChange : undefined}
-          onEdgesChange={isEditMode ? onEdgesChange : undefined}
-          onConnect={isEditMode ? (params) => setEdges((eds) => addEdge(params, eds)) : undefined}
-          fitView
-          nodesDraggable={isEditMode}
-          elementsSelectable={isEditMode}
-          onNodeClick={handleNodeClick}
-        >
-          <MiniMap />
-          <Controls />
-          <Background />
-        </ReactFlow>
+        <FlowChartComponent 
+          nodes={nodes} 
+          edges={edges} 
+          isEditMode={isEditMode} 
+          onNodesChange={onNodesChange} 
+          onEdgesChange={onEdgesChange} 
+          onConnect={setEdges} 
+          onNodeClick={handleNodeClick} 
+        />
       </div>
-      {selectedClass && (
-        <div style={{ width: '300px', padding: '10px', backgroundColor: '#f4f4f4', borderLeft: '1px solid #ddd' }}>
-          <h3>{selectedClass.code}: {selectedClass.name}</h3>
-          <p><strong>Description:</strong> {selectedClass.description || "N/A"}</p>
-          <h4>Prerequisites:</h4>
-          {selectedClass.Prerequisites && selectedClass.Prerequisites.length > 0 ? (
-            <ul>
-              {selectedClass.Prerequisites.map((prerequisite) => (
-                <li key={prerequisite.id}>{prerequisite.code}: {prerequisite.name}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>None</p>
-          )}
-        </div>
-      )}
+      {selectedClass && <NodeDetailsPanel selectedClass={selectedClass} />}
     </div>
   );
 };

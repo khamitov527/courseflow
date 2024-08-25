@@ -1,6 +1,6 @@
 // src/App.js
 import React from 'react';
-import FlowChart from './Flowchart';
+import FlowChart from './Components/Flowchart';
 import './App.css';
 
 function App() {
