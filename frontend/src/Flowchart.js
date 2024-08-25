@@ -7,6 +7,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
+import getLayoutedElements from './layout';
 
 const FlowChart = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -21,9 +22,8 @@ const FlowChart = () => {
       const courses = await response.json();
 
       // Transform the fetched data into nodes and edges for React Flow
-      const loadedNodes = courses.map((course, index) => ({
+      const loadedNodes = courses.map((course) => ({
         id: `${course.id}`,
-        position: { x: index * 200, y: 100 },
         data: { label: course.name },
         style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
       }));
@@ -44,8 +44,13 @@ const FlowChart = () => {
         }
       });
 
-      setNodes(loadedNodes);
-      setEdges(loadedEdges);
+      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+        loadedNodes,
+        loadedEdges
+      );
+
+      setNodes(layoutedNodes);
+      setEdges(layoutedEdges);
     };
 
     fetchCourses();
