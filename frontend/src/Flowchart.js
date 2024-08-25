@@ -15,22 +15,22 @@ const FlowChart = () => {
   const [selectedClass, setSelectedClass] = useState(null);
 
   useEffect(() => {
-    // Fetch all classes and their details from the backend
-    const fetchClasses = async () => {
-      const response = await fetch('http://localhost:5001/classes'); // Adjust the port if necessary
-      const data = await response.json();
+    // Fetch all courses and their details from the backend
+    const fetchCourses = async () => {
+      const response = await fetch('http://localhost:5001/courses');
+      const courses = await response.json();
 
       // Transform the fetched data into nodes and edges for React Flow
-      const loadedNodes = data.map((course, index) => ({
+      const loadedNodes = courses.map((course, index) => ({
         id: `${course.id}`,
-        position: { x: index * 200, y: 100 }, // Ensure x and y coordinates are set
-        data: { label: `${course.name}: ${course.fullName}` },
+        position: { x: index * 200, y: 100 },
+        data: { label: course.name },
         style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
       }));
 
       const loadedEdges = [];
-      data.forEach((course) => {
-        if (course.Prerequisites) {
+      courses.forEach((course) => {
+        if (course.Prerequisites && course.Prerequisites.length > 0) {
           course.Prerequisites.forEach((prerequisite) => {
             loadedEdges.push({
               id: `e${prerequisite.id}-${course.id}`,
@@ -42,25 +42,13 @@ const FlowChart = () => {
             });
           });
         }
-
-        if (course.Corequisites) {
-          course.Corequisites.forEach((corequisite) => {
-            loadedEdges.push({
-              id: `c${corequisite.id}-${course.id}`,
-              source: `${corequisite.id}`,
-              target: `${course.id}`,
-              type: 'straight',
-              style: { stroke: '#000', strokeDasharray: '5,5', strokeWidth: 2 },
-            });
-          });
-        }
       });
 
       setNodes(loadedNodes);
       setEdges(loadedEdges);
     };
 
-    fetchClasses();
+    fetchCourses();
   }, []);
 
   const handleToggleMode = () => {
@@ -70,26 +58,10 @@ const FlowChart = () => {
 
   const handleNodeClick = async (event, node) => {
     if (!isEditMode) {
-      const response = await fetch(`http://localhost:5001/classes/${node.id}`);
-      const data = await response.json();
-      setSelectedClass(data);
+      const response = await fetch(`http://localhost:5001/courses/${node.id}`);
+      const course = await response.json();
+      setSelectedClass(course);
     }
-  };
-
-  const handleNodesChange = (changes) => {
-    setNodes((nds) => 
-      nds.map((node) => {
-        const change = changes.find((c) => c.id === node.id);
-        if (change && change.position) {
-          // Update node position if it has changed
-          return {
-            ...node,
-            position: change.position,
-          };
-        }
-        return node;
-      })
-    );
   };
 
   return (
@@ -103,7 +75,7 @@ const FlowChart = () => {
         <ReactFlow
           nodes={nodes}
           edges={edges}
-          onNodesChange={isEditMode ? handleNodesChange : undefined}
+          onNodesChange={isEditMode ? onNodesChange : undefined}
           onEdgesChange={isEditMode ? onEdgesChange : undefined}
           onConnect={isEditMode ? (params) => setEdges((eds) => addEdge(params, eds)) : undefined}
           fitView
@@ -118,24 +90,18 @@ const FlowChart = () => {
       </div>
       {selectedClass && (
         <div style={{ width: '300px', padding: '10px', backgroundColor: '#f4f4f4', borderLeft: '1px solid #ddd' }}>
-          <h3>{selectedClass.fullName}</h3>
-          <p><strong>Description:</strong> {selectedClass.description}</p>
-          <p><strong>Credits:</strong> {selectedClass.credits}</p>
-          <p><strong>Semester:</strong> {selectedClass.semester} {selectedClass.year}</p>
-          <p><strong>Dates:</strong> {new Date(selectedClass.startDate).toLocaleDateString()} - {new Date(selectedClass.endDate).toLocaleDateString()}</p>
-          <h4>Sections:</h4>
-          {selectedClass.Sections.map((section, index) => (
-            <div key={index} style={{ marginBottom: '10px' }}>
-              <h5>Section {section.sectionNumber}</h5>
-              <p>Professor: {section.professor}</p>
-              <p>University: {section.university}</p>
-              <p>Location: {section.location}</p>
-              <p>Schedule: {section.schedule}</p>
-              <p>Seats: {section.seats} / {section.waitlist}</p>
-              <p>Instruction Mode: {section.instructionMode}</p>
-              <p>Notes: {section.notes}</p>
-            </div>
-          ))}
+          <h3>{selectedClass.name}</h3>
+          <p><strong>Description:</strong> {selectedClass.description || "N/A"}</p>
+          <h4>Prerequisites:</h4>
+          {selectedClass.Prerequisites && selectedClass.Prerequisites.length > 0 ? (
+            <ul>
+              {selectedClass.Prerequisites.map((prerequisite) => (
+                <li key={prerequisite.id}>{prerequisite.name}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>None</p>
+          )}
         </div>
       )}
     </div>

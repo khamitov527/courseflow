@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "akylbek",
+    "username": "akylbekkhamitov",
     "password": "",
-    "database": "classflow_db",
+    "database": "courseflow_db",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }
