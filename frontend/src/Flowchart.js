@@ -7,7 +7,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from 'react-flow-renderer';
-import getLayoutedElements from './layout';
+import getLayoutedElements from './layout'; 
 
 const FlowChart = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -24,7 +24,7 @@ const FlowChart = () => {
       // Transform the fetched data into nodes and edges for React Flow
       const loadedNodes = courses.map((course) => ({
         id: `${course.id}`,
-        data: { label: course.name },
+        data: { label: `${course.code}: ${course.name}` },
         style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
       }));
 
@@ -95,13 +95,13 @@ const FlowChart = () => {
       </div>
       {selectedClass && (
         <div style={{ width: '300px', padding: '10px', backgroundColor: '#f4f4f4', borderLeft: '1px solid #ddd' }}>
-          <h3>{selectedClass.name}</h3>
+          <h3>{selectedClass.code}: {selectedClass.name}</h3>
           <p><strong>Description:</strong> {selectedClass.description || "N/A"}</p>
           <h4>Prerequisites:</h4>
           {selectedClass.Prerequisites && selectedClass.Prerequisites.length > 0 ? (
             <ul>
               {selectedClass.Prerequisites.map((prerequisite) => (
-                <li key={prerequisite.id}>{prerequisite.name}</li>
+                <li key={prerequisite.id}>{prerequisite.code}: {prerequisite.name}</li>
               ))}
             </ul>
           ) : (

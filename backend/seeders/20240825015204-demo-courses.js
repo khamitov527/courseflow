@@ -2,23 +2,22 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Insert Courses
     const courses = await queryInterface.bulkInsert('Courses', [
-      { name: 'Intro to CS', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Discrete Structures', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Analysis & Design 1', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Architecture 1', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Analysis & Design 2', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Architecture 2', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Computer Theory', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Analysis & Design 3', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Operating Systems', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Capstone Project', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Precalculus', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Calculus 1', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Calculus 2', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Statistics', createdAt: new Date(), updatedAt: new Date() },
-      { name: 'Matrix Algebra', createdAt: new Date(), updatedAt: new Date() }
+      { name: 'Introduction to Computer Science', code: 'CS 127', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Discrete Structures', code: 'CS 150', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Software Analysis & Design I', code: 'CS 135', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Computer Architecture I', code: 'CS 160', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Software Analysis & Design II', code: 'CS 235', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Computer Architecture II', code: 'CS 260', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Computer Theory I', code: 'CS 265', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Software Analysis & Design III', code: 'CS 335', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Operating Systems', code: 'CS 340', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Advanced Applications: A Capstone for Majors', code: 'CS 499', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Precalculus', code: 'MATH 125', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Calculus I', code: 'MATH 150', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Calculus II', code: 'MATH 155', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Matrix Algebra', code: 'MATH 160', createdAt: new Date(), updatedAt: new Date() },
+      { name: 'Introduction to Applied Statistics', code: 'STAT 213', createdAt: new Date(), updatedAt: new Date() }
     ], { returning: true });
 
     const courseMap = {};
@@ -26,25 +25,24 @@ module.exports = {
       courseMap[course.name] = course.id;
     });
 
-    // Insert Prerequisites
     return queryInterface.bulkInsert('Prerequisites', [
-      { courseId: courseMap['Analysis & Design 1'], prerequisiteId: courseMap['Intro to CS'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Architecture 1'], prerequisiteId: courseMap['Intro to CS'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Architecture 1'], prerequisiteId: courseMap['Discrete Structures'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Analysis & Design 2'], prerequisiteId: courseMap['Analysis & Design 1'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Analysis & Design 2'], prerequisiteId: courseMap['Discrete Structures'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Architecture 2'], prerequisiteId: courseMap['Analysis & Design 1'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Architecture 2'], prerequisiteId: courseMap['Architecture 1'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Computer Theory'], prerequisiteId: courseMap['Architecture 1'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Analysis & Design 3'], prerequisiteId: courseMap['Analysis & Design 2'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Operating Systems'], prerequisiteId: courseMap['Analysis & Design 2'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Operating Systems'], prerequisiteId: courseMap['Architecture 2'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Capstone Project'], prerequisiteId: courseMap['Analysis & Design 3'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Capstone Project'], prerequisiteId: courseMap['Operating Systems'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Capstone Project'], prerequisiteId: courseMap['Computer Theory'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Calculus 1'], prerequisiteId: courseMap['Precalculus'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Calculus 2'], prerequisiteId: courseMap['Calculus 1'], createdAt: new Date(), updatedAt: new Date() },
-      { courseId: courseMap['Statistics'], prerequisiteId: courseMap['Precalculus'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Software Analysis & Design I'], prerequisiteId: courseMap['Introduction to Computer Science'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Computer Architecture I'], prerequisiteId: courseMap['Introduction to Computer Science'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Computer Architecture I'], prerequisiteId: courseMap['Discrete Structures'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Software Analysis & Design II'], prerequisiteId: courseMap['Software Analysis & Design I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Software Analysis & Design II'], prerequisiteId: courseMap['Discrete Structures'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Computer Architecture II'], prerequisiteId: courseMap['Software Analysis & Design I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Computer Architecture II'], prerequisiteId: courseMap['Computer Architecture I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Computer Theory I'], prerequisiteId: courseMap['Computer Architecture I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Software Analysis & Design III'], prerequisiteId: courseMap['Software Analysis & Design II'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Operating Systems'], prerequisiteId: courseMap['Software Analysis & Design II'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Operating Systems'], prerequisiteId: courseMap['Computer Architecture II'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Advanced Applications: A Capstone for Majors'], prerequisiteId: courseMap['Software Analysis & Design III'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Advanced Applications: A Capstone for Majors'], prerequisiteId: courseMap['Operating Systems'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Advanced Applications: A Capstone for Majors'], prerequisiteId: courseMap['Computer Theory I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Calculus I'], prerequisiteId: courseMap['Precalculus'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Calculus II'], prerequisiteId: courseMap['Calculus I'], createdAt: new Date(), updatedAt: new Date() },
+      { courseId: courseMap['Introduction to Applied Statistics'], prerequisiteId: courseMap['Precalculus'], createdAt: new Date(), updatedAt: new Date() },
       { courseId: courseMap['Matrix Algebra'], prerequisiteId: courseMap['Precalculus'], createdAt: new Date(), updatedAt: new Date() },
     ]);
   },

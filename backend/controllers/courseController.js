@@ -5,8 +5,10 @@ exports.getCourses = async (req, res) => {
     const courses = await Course.findAll({
       include: {
         model: Course,
-        as: 'Prerequisites'
-      }
+        as: 'Prerequisites',
+        attributes: ['id', 'name', 'code']  
+      },
+      attributes: ['id', 'name', 'code'] 
     });
     res.json(courses);
   } catch (err) {
@@ -19,8 +21,10 @@ exports.getCourseById = async (req, res) => {
     const course = await Course.findByPk(req.params.id, {
       include: {
         model: Course,
-        as: 'Prerequisites'
-      }
+        as: 'Prerequisites',
+        attributes: ['id', 'name', 'code']  // Include the code
+      },
+      attributes: ['id', 'name', 'code']  // Include the code
     });
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
