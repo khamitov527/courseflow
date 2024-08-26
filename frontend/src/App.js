@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNodesState, useEdgesState } from 'react-flow-renderer';
-import getLayoutedElements from './Components/layout';
-import FlowChart from './Components/FlowChart';
-import NodeDetailsPanel from './Components/NodeDetailsPanel';
-import styles from './App.module.css';
+import React, { useState, useEffect } from "react";
+import { useNodesState, useEdgesState } from "react-flow-renderer";
+import getLayoutedElements from "./Components/layout";
+import FlowChart from "./Components/FlowChart";
+import InfoBox from "./Components/InfoBox";
+import styles from "./App.module.css";
+import ElectivesBox from "./Components/ElectivesBox";
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -13,18 +14,18 @@ const App = () => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const response = await fetch('http://localhost:5001/courses');
+      const response = await fetch("http://localhost:5001/courses");
       const courses = await response.json();
 
-      const coreCourses = courses.filter(course => !course.isElective);
-      const electiveCourses = courses.filter(course => course.isElective);
+      const coreCourses = courses.filter((course) => !course.isElective);
+      const electiveCourses = courses.filter((course) => course.isElective);
 
       setElectives(electiveCourses);
 
       const loadedNodes = coreCourses.map((course) => ({
         id: `${course.id}`,
         data: { label: `${course.code}: ${course.name}` },
-        style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
+        style: { borderWidth: "2px", borderColor: "#000", fontWeight: "bold" },
       }));
 
       const loadedEdges = [];
@@ -36,17 +37,15 @@ const App = () => {
               source: `${prerequisite.id}`,
               target: `${course.id}`,
               animated: true,
-              arrowHeadType: 'arrow',
+              arrowHeadType: "arrow",
               style: { strokeWidth: 2 },
             });
           });
         }
       });
 
-      const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-        loadedNodes,
-        loadedEdges
-      );
+      const { nodes: layoutedNodes, edges: layoutedEdges } =
+        getLayoutedElements(loadedNodes, loadedEdges);
 
       setNodes(layoutedNodes);
       setEdges(layoutedEdges);
@@ -72,19 +71,8 @@ const App = () => {
         onConnect={setEdges}
         onNodeClick={handleNodeClick}
       />
-      <div className={styles.infoBox}>
-        {selectedClass && <NodeDetailsPanel selectedClass={selectedClass} />}
-      </div>
-      <div className={styles.electivesBox}>
-        <h3 className={styles.electivesTitle}>Elective Courses</h3>
-        <ul className={styles.list}>
-          {electives.map((elective) => (
-            <li key={elective.id} className={styles.listItem}>
-              {elective.code}: {elective.name}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <InfoBox selectedClass={selectedClass} />
+      <ElectivesBox electives={electives}/>
     </div>
   );
 };
