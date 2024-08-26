@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNodesState, useEdgesState } from "react-flow-renderer";
+import { useNodesState, useEdgesState, addEdge } from "react-flow-renderer";
 import getLayoutedElements from "./Components/layout";
 import FlowChart from "./Components/FlowChart";
 import InfoBox from "./Components/InfoBox";
@@ -8,7 +8,7 @@ import styles from "./App.module.css";
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]); // Ensure edges is initialized as an array
   const [selectedClass, setSelectedClass] = useState(null);
   const [electives, setElectives] = useState([]);
 
@@ -60,6 +60,10 @@ const App = () => {
     setSelectedClass(course);
   };
 
+  const handleConnect = (params) => {
+    setEdges((eds) => addEdge(params, eds)); // Use addEdge to safely add new edges
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Hunter CS Flowchart</h1>
@@ -68,12 +72,12 @@ const App = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={setEdges}
+        onConnect={handleConnect} // Pass the handleConnect function
         onNodeClick={handleNodeClick}
-        setNodes={setNodes} // Pass setNodes to FlowChart component
+        setNodes={setNodes}
       />
       <InfoBox selectedClass={selectedClass} />
-      <ElectivesBox electives={electives} />
+      <ElectivesBox electives={electives}/>
     </div>
   );
 };
