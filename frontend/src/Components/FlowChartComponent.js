@@ -1,10 +1,9 @@
 import React from 'react';
-import ReactFlow, { addEdge, MiniMap, Controls, Background } from 'react-flow-renderer';
+import ReactFlow, { MiniMap, Controls, Background } from 'react-flow-renderer';
 
 const FlowChartComponent = ({
   nodes, 
   edges, 
-  isEditMode, 
   onNodesChange, 
   onEdgesChange, 
   onConnect, 
@@ -13,13 +12,11 @@ const FlowChartComponent = ({
   <ReactFlow
     nodes={nodes}
     edges={edges}
-    onNodesChange={isEditMode ? onNodesChange : undefined}
-    onEdgesChange={isEditMode ? onEdgesChange : undefined}
-    onConnect={isEditMode ? (params) => onConnect(params) : undefined}
-    fitView
-    nodesDraggable={isEditMode}
-    elementsSelectable={isEditMode}
+    onNodesChange={onNodesChange}
+    onEdgesChange={onEdgesChange}
+    onConnect={onConnect}
     onNodeClick={onNodeClick}
+    fitView
   >
     <MiniMap />
     <Controls />

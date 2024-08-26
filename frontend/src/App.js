@@ -1,11 +1,10 @@
-// src/App.js
 import React from 'react';
-import FlowChart from './Components/Flowchart';
-import './App.css';
+import FlowChart from './Components/FlowChart';
+import styles from './App.module.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className={styles.App}>
       <h1>Class Flowchart for Major</h1>
       <FlowChart />
     </div>
@@ -13,3 +12,4 @@ function App() {
 }
 
 export default App;
+
