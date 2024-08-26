@@ -3,8 +3,8 @@ import { useNodesState, useEdgesState } from "react-flow-renderer";
 import getLayoutedElements from "./Components/layout";
 import FlowChart from "./Components/FlowChart";
 import InfoBox from "./Components/InfoBox";
-import styles from "./App.module.css";
 import ElectivesBox from "./Components/ElectivesBox";
+import styles from "./App.module.css";
 
 const App = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -70,9 +70,10 @@ const App = () => {
         onEdgesChange={onEdgesChange}
         onConnect={setEdges}
         onNodeClick={handleNodeClick}
+        setNodes={setNodes} // Pass setNodes to FlowChart component
       />
       <InfoBox selectedClass={selectedClass} />
-      <ElectivesBox electives={electives}/>
+      <ElectivesBox electives={electives} />
     </div>
   );
 };
