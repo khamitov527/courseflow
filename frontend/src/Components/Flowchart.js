@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactFlow, {
-  addEdge,
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState, 
-  useEdgesState,  
-} from 'react-flow-renderer';
+import { useNodesState, useEdgesState } from 'react-flow-renderer';
 import getLayoutedElements from './layout'; 
 import FlowChartComponent from './FlowChartComponent';
 import ModeToggleButton from './ModeToggleButton';
@@ -23,14 +16,18 @@ const FlowChart = () => {
       const response = await fetch('http://localhost:5001/courses');
       const courses = await response.json();
 
-      const loadedNodes = courses.map((course) => ({
+      // Filter out elective courses
+      const coreCourses = courses.filter(course => !course.isElective);
+
+      // Transform the filtered data into nodes and edges for React Flow
+      const loadedNodes = coreCourses.map((course) => ({
         id: `${course.id}`,
         data: { label: `${course.code}: ${course.name}` },
         style: { borderWidth: '2px', borderColor: '#000', fontWeight: 'bold' },
       }));
 
       const loadedEdges = [];
-      courses.forEach((course) => {
+      coreCourses.forEach((course) => {
         if (course.Prerequisites && course.Prerequisites.length > 0) {
           course.Prerequisites.forEach((prerequisite) => {
             loadedEdges.push({
