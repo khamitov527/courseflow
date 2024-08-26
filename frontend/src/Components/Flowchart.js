@@ -10,14 +10,19 @@ const FlowChart = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [electives, setElectives] = useState([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
       const response = await fetch('http://localhost:5001/courses');
       const courses = await response.json();
 
-      // Filter out elective courses
+      // Separate core courses and electives
       const coreCourses = courses.filter(course => !course.isElective);
+      const electiveCourses = courses.filter(course => course.isElective);
+
+      // Set elective courses to state
+      setElectives(electiveCourses);
 
       // Transform the filtered data into nodes and edges for React Flow
       const loadedNodes = coreCourses.map((course) => ({
@@ -82,6 +87,16 @@ const FlowChart = () => {
           onConnect={setEdges} 
           onNodeClick={handleNodeClick} 
         />
+      </div>
+      <div style={{ width: '300px', padding: '10px', backgroundColor: '#f4f4f4', borderLeft: '1px solid #ddd', overflowY: 'auto', maxHeight: '100vh' }}>
+        <h3>Elective Courses</h3>
+        <ul>
+          {electives.map((elective) => (
+            <li key={elective.id}>
+              {elective.code}: {elective.name}
+            </li>
+          ))}
+        </ul>
       </div>
       {selectedClass && <NodeDetailsPanel selectedClass={selectedClass} />}
     </div>
